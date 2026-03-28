@@ -39,7 +39,7 @@ typedef struct s_data
 
 int		init_data(t_data *data);
 size_t	get_time(void);
-void	ft_usleep(size_t milliseconds, t_data *data);
+void	ft_usleep(size_t milliseconds);
 int		check_death(t_data *data);
 void	print_message(t_philo *philo, char *msg);
 void	*routine(void *arg);

@@ -47,7 +47,7 @@ static int	validate_parsed_data(t_data *data, int argc)
 	return (1);
 }
 
-int	check_args(int argc, char **argv, t_data *data)
+int	argument_checker(int argc, char **argv, t_data *data)
 {
 	if (argc != 5 && argc != 6)
 	{
@@ -87,7 +87,7 @@ int	main(int argc, char **argv)
 	t_data	data;
 	int		status;
 
-	status = check_args(argc, argv, &data);
+	status = argument_checker(argc, argv, &data);
 	if (status == 0)
 		return (1);
 	else if (status == -2)
