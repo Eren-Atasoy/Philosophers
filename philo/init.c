@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eratasoy <eratasoy@student.42istanbul.c    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/25 20:18:59 by eratasoy          #+#    #+#             */
+/*   Updated: 2026/05/25 20:19:01 by eratasoy         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 static int	table_mutex_initialization(t_table *table)
@@ -6,25 +18,28 @@ static int	table_mutex_initialization(t_table *table)
 
 	if (pthread_mutex_init(&table->log_mutex, NULL) != 0)
 		return (0);
+	table->log_mutex_flag = 1;
 	if (pthread_mutex_init(&table->dead_mutex, NULL) != 0)
 		return (0);
-
+	table->dead_mutex_flag = 1;
 	i = 0;
 	while (i < table->philo_count)
 	{
 		if (pthread_mutex_init(&table->fork_array[i], NULL) != 0)
 			return (0);
+		table->forks_init_count++;
 		i++;
 	}
 	return (1);
 }
 
-static void philo_forks_assignment(t_philo *current_philo, t_table *table, int i)
+static void	philo_forks_assignment(t_philosopher *current_philo, t_table *table,
+		int i)
 {
 	int	left_fork;
 	int	right_fork;
 
-	left_fork= i;
+	left_fork = i;
 	right_fork = (i + 1) % table->philo_count;
 	if (left_fork < right_fork)
 	{
@@ -40,8 +55,8 @@ static void philo_forks_assignment(t_philo *current_philo, t_table *table, int i
 
 static int	philo_initialization(t_table *table)
 {
-	int		i;
-	t_philo	*current_philo;
+	int				i;
+	t_philosopher	*current_philo;
 
 	i = 0;
 	while (i < table->philo_count)
@@ -53,17 +68,16 @@ static int	philo_initialization(t_table *table)
 		current_philo->table = table;
 		if (pthread_mutex_init(&current_philo->mutex_meal, NULL) != 0)
 			return (0);
+		table->philos_init_count++;
 		philo_forks_assignment(current_philo, table, i);
 		i++;
 	}
 	return (1);
 }
 
-int	table_init(t_table *table)
+static int	table_allocation(t_table *table)
 {
-	table->philo_array = NULL;
-	table->fork_array = NULL;
-	table->philo_array = malloc(sizeof(t_philo) * table->philo_count);
+	table->philo_array = malloc(sizeof(t_philosopher) * table->philo_count);
 	if (!table->philo_array)
 		return (0);
 	table->fork_array = malloc(sizeof(pthread_mutex_t) * table->philo_count);
@@ -72,7 +86,20 @@ int	table_init(t_table *table)
 		clean_table(table);
 		return (0);
 	}
+	return (1);
+}
+
+int	table_init(t_table *table)
+{
+	table->philo_array = NULL;
+	table->fork_array = NULL;
 	table->dead_flag = 0;
+	table->forks_init_count = 0;
+	table->philos_init_count = 0;
+	table->log_mutex_flag = 0;
+	table->dead_mutex_flag = 0;
+	if (!table_allocation(table))
+		return (0);
 	if (!philo_initialization(table))
 	{
 		clean_table(table);
