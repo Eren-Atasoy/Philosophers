@@ -6,7 +6,7 @@
 /*   By: eratasoy <eratasoy@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/25 20:30:51 by eratasoy          #+#    #+#             */
-/*   Updated: 2026/06/01 17:59:06 by eratasoy         ###   ########.fr       */
+/*   Updated: 2026/06/01 18:09:14 by eratasoy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,9 @@ int	table_parse_args(t_table *table, int argc, char **argv)
 {
 	if (argc != 5 && argc != 6)
 	{
-		write(2, "Error: ./philo nb_philo t_die t_eat t_sleep [min_meals]\n", 56);
+		write(2, "Error: ./philo number_of_philosophers "
+			"time_to_die time_to_eat time_to_sleep "
+			"[number_of_times_each_philosopher_must_eat]\n", 120);
 		return (0);
 	}
 	table->philo_count = parse_positive_int(argv[1]);
