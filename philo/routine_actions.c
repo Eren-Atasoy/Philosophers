@@ -6,7 +6,7 @@
 /*   By: eratasoy <eratasoy@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/25 20:19:59 by eratasoy          #+#    #+#             */
-/*   Updated: 2026/05/25 20:39:33 by eratasoy         ###   ########.fr       */
+/*   Updated: 2026/06/01 15:51:12 by eratasoy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,23 @@ void	philo_sleep(t_philosopher *philo)
 
 void	philo_think(t_philosopher *philo)
 {
+	size_t	t_eat;
+	size_t	t_sleep;
+	size_t	t_think;
+
 	log_action(philo, "is thinking");
+	if (philo->table->philo_count % 2 != 0)
+	{
+		t_eat = philo->table->time_to_eat;
+		t_sleep = philo->table->time_to_sleep;
+		if (t_eat > t_sleep)
+		{
+			t_think = (t_eat - t_sleep) + 1;
+			military_sleep(philo->table, t_think);
+		}
+		else
+		{
+			military_sleep(philo->table, 1);
+		}
+	}
 }
